@@ -20,7 +20,6 @@ exports.register = async (userData) => {
 }
 
 exports.login = async ({ email, password }) => {
-    // Get user from DB
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -29,13 +28,7 @@ exports.login = async ({ email, password }) => {
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-
-    }
-
-    const payload = {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
+        throw new Error('Email or password is invalid');
     }
 
     const token = await generateToken(user);

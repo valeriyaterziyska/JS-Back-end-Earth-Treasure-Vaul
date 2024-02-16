@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const cookieParser = require('cookie-parser');
-
 const authService = require('../services/authService');
+const { isAuth } = require('../middlewares/authMiddleware');
+
 
 router.get('/register', (req, res) => {
     res.render('auth/register');
@@ -24,8 +24,8 @@ router.post('/login', async (req, res) => {
     const loginData = req.body;
 
     const token = await authService.login(loginData);
-
-    res.cookie('auth', token);
+    
+    res.cookie('auth', token); 
     res.redirect('/');
 });
 
