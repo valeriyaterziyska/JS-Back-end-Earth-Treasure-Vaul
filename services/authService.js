@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const SECRET = 'ajshdkayi7gdkchbjbhdaygteqw24y7';
 
-exports.register = (userData) => {
+exports.register = async (userData) => {
     if (userData.password !== userData.rePassword) {
         throw new Error('Password');
     }
@@ -15,7 +15,9 @@ exports.register = (userData) => {
         throw new Error('User already exists');
     }
 
-    return User.create(userData);
+    const createdUser = await User.create(userData);
+    const token = await generateToken(createdUser);
+    return token;
 }
 
 exports.login = async ({ email, password }) => {
@@ -37,6 +39,16 @@ exports.login = async ({ email, password }) => {
         email: user.email,
     }
 
-    const token = await jwt.sign(payload, SECRET, { expiresIn: '2h' });
+    const token = await generateToken(user);
     return token;
+};
+
+function generateToken(user) {
+    const payload = {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+    }
+
+    return jwt.sign(payload, SECRET, { expiresIn: '2h' });
 };
