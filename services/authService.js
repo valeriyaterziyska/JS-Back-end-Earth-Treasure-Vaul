@@ -1,15 +1,14 @@
-const User = require('../models/User');
 const jwt = require('../lib/jwt');
 const bcrypt = require('bcrypt');
-
-const SECRET = 'ajshdkayi7gdkchbjbhdaygteqw24y7';
+const User = require('../models/User');
+const { SECRET } = require('../config');
 
 exports.register = async (userData) => {
     if (userData.password !== userData.rePassword) {
-        throw new Error('Password');
+        throw new Error('Password missmatch');
     }
 
-    const user = User.findOne({ email: userData.email });
+    const user = await User.findOne({ email: userData.email });
 
     if (user) {
         throw new Error('User already exists');
