@@ -20,6 +20,13 @@ userSchema.pre('save', async function() {
     this.password = await bcrypt.hash(this.password, 12);
 });
 
+userSchema.virtual('rePassword')
+    .set(function(value) {
+        if(value !== this.password) {
+            throw new Error('Password missmatch');
+        }
+    });
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
