@@ -2,10 +2,9 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-//TODO: Change the port
 
-const PORT = 5000;
-const dbName = 'course-book';
+const PORT = 3000;
+const dbName = 'earth-treasure';
 
 const routes = require('./routes');
 const { authMiddleware } = require('./middlewares/authMiddleware');

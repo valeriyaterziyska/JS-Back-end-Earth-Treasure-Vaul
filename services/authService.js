@@ -2,21 +2,27 @@ const jwt = require('../lib/jwt');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const { SECRET } = require('../config');
+const { getErrorMessage } = require('../utils/errorUtils');
 
 exports.register = async (userData) => {
     if (userData.password !== userData.rePassword) {
         throw new Error('Password missmatch');
     }
 
-    const user = await User.findOne({ email: userData.email });
+    try {
+        const user = await User.findOne({ email: userData.email });
 
-    if (user) {
-        throw new Error('User already exists');
+        if (user) {
+            throw new Error('User already exists');
+        }
+
+        const createdUser = await User.create(userData);
+        const token = await generateToken(createdUser);
+        return token;
+    } catch (err) {
+        return res.render('auth/register', { error: getErrorMessage(err) });
+
     }
-
-    const createdUser = await User.create(userData);
-    const token = await generateToken(createdUser);
-    return token;
 }
 
 exports.login = async ({ email, password }) => {
